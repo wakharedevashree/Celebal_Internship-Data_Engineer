@@ -1,104 +1,96 @@
-# 🛒 Amazon Shopping Dataset — EDA & Data Cleaning
+# Shopping Dataset Analysis — Assignment 1
 
-**Assignment 1 | Basic Data Exploration and Cleaning using Pandas**
+## 📌 Objective
+This project performs **data exploration, cleaning, and visualization** on an e-commerce shopping dataset using Python and Pandas, as part of the Data Engineering course Assignment 1.
 
----
-
-##  Objective
-Perform exploratory data analysis (EDA), data cleaning, and derive meaningful insights
-from a combined Amazon product dataset spanning 9 categories.
+1. **Data Exploration & Cleaning** — loading, exploring, cleaning, univariate, bivariate, and multivariate analysis with saved chart images and saving the dataset.
+ .
 
 ---
 
-##  Folder Structure
+## 📂 Project Structure
 
 ```
-Assignment1/
-│── data/
-│   ├── combined_dataset.csv     ← raw combined file
-|__ Cleaned_Dataset/     
-│   └── cleaned_amazon_dataset.xls  ← cleaned + feature-engineered file
-│── Notebook/        ← full Jupyter Notebook
-    |__Data_Analysis
-│── README.md
+shopping-analysis/
+│
+├── data/
+│   └── Combined_dataset.csv                  # Original raw dataset (1000 rows × 24 columns)
+│
+├── Notebook/
+│   ├── Data_Analysis.ipynb   # Step 1-7: load, explore, clean, save
+│   
+│
+├── Cleaned_Dataset (output)/
+│   ├── cleaned_dataset.csv                   # Focused, analysis-ready cleaned dataset
+│   └── cleaned_dataset_full.csv              # Full cleaned dataset (all columns + derived columns)
+│
+├── images/                                   # All saved chart images (.png)
+│   ├── 01_univariate_rating_histogram.png
+│   ├── 02_univariate_price_histogram.png
+│   ├── 03_univariate_total_amount_boxplot.png
+│   ├── 04_univariate_top_categories_bar.png
+│   ├── 05_bivariate_rating_vs_ratingscount.png
+│   ├── 06_bivariate_price_vs_discount.png
+│   ├── 07_bivariate_price_by_category_boxplot.png
+│   ├── 08_bivariate_rating_vs_totalamount.png
+│   ├── 09_multivariate_rating_price_quantity.png
+│   ├── 10_multivariate_correlation_heatmap.png
+│   ├── 11_multivariate_category_ratingband_totalamount.png
+│   
+│
+└── README.md
 ```
 
 ---
 
-##  Dataset
+## 📊 Dataset Description
 
-| Category | Source File |
+The dataset (`Combined_dataset.csv`) contains **1000 product listings** scraped from an e-commerce platform, with **24 columns**, including:
+
+| Column | Description |
 |---|---|
-| Audio / Video | amazon_audio_video.csv |
-| Camera | amazon_camra.csv |
-| Car Accessories | amazon_car_accessories.csv |
-| Laptop | amazon_laptop.csv |
-| Men's Clothing | amazon_men.csv |
-| Men's Shoes | amazon_men_shoe.csv |
-| Mobile | amazon_mobile.csv |
-| Movies | amazon_movies.csv |
-| Toys | amazon_toys_1.csv |
+| `product_id` | Unique identifier for each product |
+| `title` | Brand / product title |
+| `category` | Product category (e.g. backpacks, tshirts, sarees) |
+| `rating` | Average customer rating (0–5) |
+| `ratings_count` | Number of ratings received |
+| `initial_price` | Original listed price |
+| `discount` | Discount percentage |
+| `final_price` | Selling price after discount |
+| `seller_name`, `seller_information` | Seller details |
+| `product_details`, `product_specifications`, `breadcrumbs`, etc. | Additional metadata (JSON-style text fields) |
 
-**Raw combined rows:** ~1,00,678  
-**After cleaning:** ~29,000 unique products
-
----
-
-##  Steps Performed
-
-### Step 1 — Load Data
-- Loaded all 9 CSV files using `pandas`
-- Standardised column names across files
-- Combined into a single DataFrame
-
-### Step 2 — Understand Data
-- Used `.head()`, `.tail()`, `.shape`, `.info()`, `.describe()`
-- Identified missing values and data type issues
-
-### Step 3 — Data Cleaning
-- Converted price columns from string/mixed to `float`
-- Removed commas from `num_reviews` (e.g. `"53,617"` → `53617`)
-- Filled missing values appropriately
-- Removed rows with no price or no product name
-- Removed duplicate product entries
-
-### Step 4 — Feature Engineering
-- `price_difference` = real_price − price (discount amount in $)
-- `discount_pct` = (price_difference / real_price) × 100
-- `popularity_score` = log(num_reviews + 1)
-- `price_tier` = Budget / Mid-Range / Premium
-- `has_discount` = True/False flag
-
-### Step 5 — Analysis
-- **Univariate:** price distribution, category counts, discount distribution
-- **Bivariate:** correlation matrix, price vs popularity scatter
-- **Category-level:** avg price, avg discount, top reviewed products
-
-### Step 6 — Visualizations (9 Charts)
-1. Bar chart — Products per category
-2. Histogram — Price distribution
-3. Bar chart — Average price per category
-4. Boxplot — Price spread per category
-5. Bar chart — Average discount % per category
-6. Histogram — Discount % distribution
-7. Stacked bar — Price tier per category
-8. Heatmap — Correlation matrix
-9. Scatter — Price vs Popularity Score
-
-### Step 7 — Key Insights
-- Men's Clothing & Shoes dominate product count
-- Laptops and Mobiles are the priciest categories
-- Camera & Car Accessories offer the highest average discounts
-- Price is NOT strongly correlated with popularity
-- Majority of products are priced under $100
+> **Note:** This is **product catalog data**, not transactional/order data — it does not include a real `quantity` column. A `quantity` column (1–5 units) was simulated with a fixed random seed to fulfill the assignment's `total_amount = price * quantity` requirement. This is clearly documented in the notebook.
 
 ---
 
-##  Libraries Used
-- `pandas` — data loading, cleaning, analysis
-- `numpy` — numeric operations
-- `matplotlib` — plotting
-- `seaborn` — statistical visualizations
+## 🛠️ Steps Performed
+
+### Notebook 1 — Data Exploration & Cleaning
+1. **Load** the CSV into a Pandas DataFrame
+2. **Explore** the data — `.head()`, `.tail()`, `.shape`, `.columns`, `.dtypes`, `.info()`, `.describe()`
+3. **Handle missing values** — identified missing % per column, filled `discount` with 0 and text columns (`seller_name`, `variations`, `videos`, etc.) with placeholders
+4. **Basic operations** — column selection and row filtering (e.g. high-rated products, category filters, combined conditions)
+5. **Remove duplicates** — checked for duplicate rows and duplicate `product_id`s
+6. **Derived column** — cleaned `final_price` to numeric, simulated `quantity`, and computed `total_amount = price * quantity`
+7. **Univariate analysis** — distribution of ratings, prices, total amount, and top categories
+8. **Bivariate analysis** — rating vs ratings count, price vs discount, price by category, rating vs total amount
+9. **Multivariate analysis** — rating/price/quantity scatter, correlation heatmap, category × rating-band
+10. **Save cleaned dataset** — exported `cleaned_dataset.csv` and `cleaned_dataset_full.csv`
+
+
+
+
 
 ---
 
+## 🔍 Key Insights
+
+- Ratings are left-skewed — most products cluster between 3.5 and 4.5.
+- Final price is right-skewed, with a long tail of higher-priced items.
+- `tops`, `dresses`, and `shirts` are the dominant categories by product count.
+- `final_price` and `total_amount` are strongly correlated (~0.81), as expected since `total_amount` is derived from price.
+- `rating` shows little to no correlation with price, quantity, or total amount — rating alone doesn't predict order value in this dataset.
+- Discount percentage doesn't follow a strong pattern relative to price — discounts appear spread fairly evenly across price points.
+
+---
