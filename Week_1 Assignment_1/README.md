@@ -27,15 +27,13 @@ shopping-analysis/
 ├── images/                                   # All saved chart images (.png)
 │   ├── 01_univariate_rating_histogram.png
 │   ├── 02_univariate_price_histogram.png
-│   ├── 03_univariate_total_amount_boxplot.png
-│   ├── 04_univariate_top_categories_bar.png
-│   ├── 05_bivariate_rating_vs_ratingscount.png
-│   ├── 06_bivariate_price_vs_discount.png
-│   ├── 07_bivariate_price_by_category_boxplot.png
-│   ├── 08_bivariate_rating_vs_totalamount.png
-│   ├── 09_multivariate_rating_price_quantity.png
-│   ├── 10_multivariate_correlation_heatmap.png
-│   ├── 11_multivariate_category_ratingband_totalamount.png
+│   ├── 03_univariate_top_categories_bar.png
+│   ├── 04_bivariate_rating_vs_ratingscount.png
+│   ├── 05_bivariate_price_vs_discount.png
+│   ├── 06_bivariate_price_by_category_boxplot.png
+│   ├── 07_multivariate_rating_price_quantity.png
+│   ├── 08_multivariate_correlation_heatmap.png
+│   ├── 09_multivariate_category_ratingband_totalamount.png
 │   
 │
 └── README.md
