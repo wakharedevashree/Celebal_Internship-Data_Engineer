@@ -51,7 +51,19 @@ CREATE TABLE order_items (
      
     FOREIGN KEY (order_id)   REFERENCES orders(order_id), 
     FOREIGN KEY (product_id) REFERENCES products(product_id) 
-); 
+    );
+
+
+    CREATE INDEX idx_customers_city ON customers(city);
+
+    CREATE INDEX idx_customers_state ON customers(state);
+
+    CREATE INDEX idx_products_category ON products(category);
+
+    CREATE INDEX idx_orders_date ON orders(order_date);
+
+    CREATE INDEX idx_orders_status ON orders(status);
+
 
 
 
@@ -341,7 +353,7 @@ SELECT category , MAX(unit_price) AS most_expensive_category, MIN(unit_price) AS
 SELECT o.order_id ,o.order_date, c.first_name,c.last_name, o.total_amount FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id;
 
 --Q20. Using a LEFT JOIN, list ALL customers and their orders (if any). Customers with no orders should still appear with NULL values for order columns. 
-SELECT o.order_id, o.order_date,o.total_amount,c.first_name,c.last_name, c.customer_id FROM orders o LEFT JOIN  customers c ON o.customer_id = c.customer_id;
+SELECT c.customer_id, c.first_name, c.last_name, o.order_id, o.order_date, o.total_amount FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id;
 
 --Q21. Write a query using JOINs across three tables (orders → order_items → products) to show: order_id, product_name, quantity, unit_price, and discount_pct for each order item. 
 SELECT o.order_id, p.product_name, oi.quantity, oi.unit_price, oi.discount_pct from  orders o INNER JOIN order_items oi ON o.order_id = oi.order_id INNER JOIN products p ON p.product_id = oi.product_id;
@@ -578,25 +590,26 @@ Even if power fails immediately after the commit, the data remains intact.
 
 */
 
-/*Q27. Write a SQL transaction that does the following atomically: 
-  1. Insert a new order (order_id=1011, customer_id=102, today's date, 'Pending', 1598.00) */
-  INSERT INTO  (order_id,customer_id,order_date,status,total_amount) VALUES (1011,102,curdate(),'Pending',1598.00);
-  SELECT * FROM orders;
-  
- --2. Insert two order items for that order 
-  INSERT INTO order_items (item_id, order_id, product_id, quantity, unit_price, discount_pct) VALUES (5016, 1011, 202, 1, 799.00, 0),(5017, 1011, 208, 1, 599.00, 0);
-  SELECT * FROM order_items;
-  
-  --3. Update the stock_qty of the purchased products 
-   UPDATE products SET stock_qty = 260 where product_id=201;
-   SELECT * FROM products;
-   
-  /*4. If any step fails, ROLLBACK the entire transaction. Otherwise, COMMIT. 
-  Write the complete BEGIN...COMMIT/ROLLBACK block. */
-  COMMIT;
+#Q27. Write a SQL transaction that does the following atomically: 
+ START TRANSACTION;
 
-/*Rollback Example
-If any statement fails:
+-- 1. Insert a new order
+INSERT INTO orders (order_id, customer_id, order_date, status, total_amount) VALUES (1011, 102, CURDATE(), 'Pending', 1598.00);
+
+-- 2. Insert two order items
+INSERT INTO order_items (item_id, order_id, product_id, quantity, unit_price, discount_pct) VALUES (5016, 1011, 202, 1, 799.00, 0), (5017, 1011, 208, 1, 599.00, 0);
+
+-- 3. Update stock quantity
+UPDATE products SET stock_qty = stock_qty - 1 WHERE product_id = 202;
+
+UPDATE products SET stock_qty = stock_qty - 1 WHERE product_id = 208;
+
+-- 4. Commit if everything succeeds
+COMMIT;
+
+-- If any statement fails before COMMIT,
+-- execute:
+ROLLBACK;
 
 */ROLLBACK;/*
 
